@@ -1,0 +1,11 @@
+.container {
+    display: flex; /* or inline-flex */
+}
+
+#blog-list {
+    flex-basis: 50%;
+}
+
+.blog-header {
+    justify-content: space-between;
+}
