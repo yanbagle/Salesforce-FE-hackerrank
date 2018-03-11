@@ -1,3 +1,7 @@
+body {
+    margin: 2rem;
+}
+
 .container {
     display: flex; /* or inline-flex */
 }
@@ -8,4 +12,27 @@
 
 .blog-header {
     justify-content: space-between;
+}
+
+/*
+    TODO: move buttons specific css to its own css file
+*/
+.buttons {
+    justify-content: flex-end;
+}
+
+.buttons button {
+    margin-top: 1rem;
+    border: none;
+    color: white;
+    padding: 0.5rem 2rem;
+}
+
+.edit-button {
+    margin-right: 0.5rem;
+    background-color: #4CAF50;
+}
+
+.delete-button {
+    background-color: #f44336;
 }
