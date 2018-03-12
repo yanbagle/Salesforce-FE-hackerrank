@@ -77,6 +77,7 @@ function handleClick(event) {
 function handleEdit(buttonId) {
     // do something with button
     console.log(buttonId);
+    editMode(blogList[buttonId]);
 }
 
 function handleDelete(buttonId) {
