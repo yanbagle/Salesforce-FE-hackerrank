@@ -1,5 +1,6 @@
 
 const blogList = [];
+const blogApi = new api();
 
 function init () {
     // create some random blog posts
@@ -22,6 +23,7 @@ function init () {
 
 function displayBlog () {
     const blogEle = document.getElementById('blog');
+    blogEle.innerHTML = '';
     let blogPostTemplate = '';
     let displayDate;
 
@@ -42,6 +44,56 @@ function displayBlog () {
     });
 
     blogEle.insertAdjacentHTML( 'beforeend', blogPostTemplate );
+}
+
+function handleClick(event) {
+    event = event || window.event;
+    event.target = event.target || event.srcElement;
+
+    let element = event.srcElement;
+    const buttonType = element.id.split('-')[0];
+    const eleId = element.id.split('-')[1];
+
+    // Climb up the document tree from the target of the event
+    while (element) {
+        if (element.nodeName === "BUTTON") {
+            switch (buttonType) {
+                case 'edit':
+                    handleEdit(eleId);
+                    break;
+                case 'delete':
+                    handleDelete(eleId);
+                    break;
+                default:
+                    break;
+            }
+            // The user clicked on a <button> or clicked on an element inside a <button>
+            break;
+        }
+        element = element.parentNode;
+    }
+}
+
+function handleEdit(buttonId) {
+    // do something with button
+    console.log(buttonId);
+}
+
+function handleDelete(buttonId) {
+    // do something with button
+    console.log(buttonId);
+    // make api call
+    // blogApi.deleteBlog(buttonId).then();
+    blogList.splice(buttonId, 1);
+    console.log(blogList);
+    displayBlog();
+}
+
+if (document.addEventListener) {
+    document.addEventListener("click", handleClick, false);
+}
+else if (document.attachEvent) {
+    document.attachEvent("onclick", handleClick);
 }
 
 init();
