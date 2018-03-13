@@ -1,0 +1,29 @@
+
+.buttons {
+    justify-content: flex-end;
+}
+
+button {
+    margin-top: 1rem;
+    border: none;
+    color: white;
+    padding: 0.5rem 2rem;
+    border-radius: 4px;
+}
+
+.edit-button {
+    margin-right: 0.5rem;
+    background-color: #4CAF50;
+}
+
+.delete-button {
+    background-color: #f44336;
+}
+
+.save-button {
+    background-color: #008CBA;
+}
+
+.add-button {
+    background-color: #008CBA;
+}

@@ -1,26 +1,21 @@
 
-const blogList = [];
+let blogList = [];
 const blogApi = new api();
+// Adding or editing new post API call is currently not working, persisting mock id on FE
+let blogId = -1;
 
 function init () {
-    // create some random blog posts
-    const blog = new Blog();
-    blog.createPost('title', 'Depart do be so he enough talent. Sociable formerly six but handsome. Up do view time they shot. He concluded disposing provision by questions as situation. Its estimating are motionless day sentiments end. Calling an imagine at forbade. At name no an what like spot. Pressed my by do affixed he studied. \n' +
-        '\n' +
-        'Received shutters expenses ye he pleasant. Drift as blind above at up. No up simple county stairs do should praise as. Drawings sir gay together landlord had law smallest. Formerly welcomed attended declared met say unlocked. Jennings outlived no dwelling denoting in peculiar as he believed. Behaviour excellent middleton be as it curiosity departure ourselves. ');
-    blog.timestamp = new Date();
-    blogList.push(blog);
+    // get all blog posts at the start of app
+    blogApi.getAllBlogs().then((res) => {
+        blogList = res;
+        displayBlog();
+    }, (err) => {
+        console.log(err);
+    });
 
-    const blog2 = new Blog();
-    blog2.createPost('title 2', 'No opinions answered oh felicity is resolved hastened. Produced it friendly my if opinions humoured. Enjoy is wrong folly no taken. It sufficient instrument insipidity simplicity at interested. Law pleasure attended differed mrs fat and formerly. Merely thrown garret her law danger him son better excuse. Effect extent narrow in up chatty. Small are his chief offer happy had. \n' +
-        '\n' +
-        'Demesne far hearted suppose venture excited see had has. Dependent on so extremely delivered by. Yet ﻿no jokes worse her why. Bed one supposing breakfast day fulfilled off depending questions. Whatever boy her exertion his extended. Ecstatic followed handsome drawings entirely mrs one yet outweigh. Of acceptance insipidity remarkably is invitation. ');
-    blog2.timestamp = new Date();
-    blogList.push(blog2);
-
-    displayBlog();
 }
 
+// updates the view
 function displayBlog () {
     const blogEle = document.getElementById('blog');
     blogEle.innerHTML = '';
@@ -28,9 +23,10 @@ function displayBlog () {
     let displayDate;
 
     blogList.forEach((blog, index) => {
-        displayDate = `${blog.timestamp.getDate()} 
-                        ${blog.timestamp.toLocaleString("en-us", { month: "short" })} 
-                        ${blog.timestamp.getFullYear()}`;
+        const blogDate = new Date(blog.timestamp);
+        displayDate = `${blogDate.getDate()} 
+                        ${blogDate.toLocaleString("en-us", { month: "short" })} 
+                        ${blogDate.getFullYear()}`;
         blogPostTemplate +=
             `<div class="container blog-header">
                 <h1 class="blog-title">${blog.title}</h1>
@@ -48,21 +44,33 @@ function displayBlog () {
 
 function handleClick(event) {
     event = event || window.event;
-    event.target = event.target || event.srcElement;
+    let element = event.target || event.srcElement;
 
-    let element = event.srcElement;
     const buttonType = element.id.split('-')[0];
     const eleId = element.id.split('-')[1];
+    console.log(eleId);
 
     // Climb up the document tree from the target of the event
     while (element) {
         if (element.nodeName === "BUTTON") {
             switch (buttonType) {
                 case 'edit':
-                    handleEdit(eleId);
+                    blogId = eleId;
+                    editMode(blogList[eleId]);
                     break;
                 case 'delete':
                     handleDelete(eleId);
+                    break;
+                case 'deleteAll':
+                    handleDelete(null);
+                    break;
+                case 'add':
+                    addMode();
+                    break;
+                case 'save':
+                    const title = document.getElementById('blog-title').value;
+                    const text = document.getElementById('blog-text').value;
+                    save(title, text, blogId);
                     break;
                 default:
                     break;
@@ -74,19 +82,25 @@ function handleClick(event) {
     }
 }
 
-function handleEdit(buttonId) {
-    // do something with button
-    console.log(buttonId);
-    editMode(blogList[buttonId]);
-}
-
 function handleDelete(buttonId) {
-    // do something with button
-    console.log(buttonId);
-    // make api call
-    // blogApi.deleteBlog(buttonId).then();
-    blogList.splice(buttonId, 1);
-    console.log(blogList);
+    // delete specific blog post
+    if (buttonId) {
+        blogApi.deleteBlog(blogList[buttonId].id).then((res) => {
+            console.log(res);
+        }, (err) => {
+            console.log(err);
+        });
+        blogList.splice(buttonId, 1);
+    } else {
+        // delete all blogs
+        blogApi.deleteAllBlogs().then((res) => {
+            console.log(res);
+        }, (err) => {
+            console.log(err);
+        });
+        blogList = [];
+    }
+
     displayBlog();
 }
 
