@@ -6,13 +6,20 @@ let blogId = -1;
 
 function init () {
     // get all blog posts at the start of app
+    displayLoading();
     blogApi.getAllBlogs().then((res) => {
         blogList = res;
-        displayBlog();
+		displayBlog();
     }, (err) => {
         console.log(err);
     });
 
+}
+
+function displayLoading () {
+	const blogEle = document.getElementById('blog');
+	const loadingMessage = `<div class="margin-top">One sec, getting blog posts!</div>`;
+	blogEle.insertAdjacentHTML( 'beforeend', loadingMessage );
 }
 
 // updates the view
